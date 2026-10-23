@@ -1,0 +1,11 @@
+# Единые переводы строк (LF) для всех текстовых файлов, в том числе
+# на Windows: иначе diff пестрит изменениями, которых нет.
+* text=auto eol=lf
+
+# Картинки и прочие двоичные файлы git не трогает
+*.png binary
+*.jpg binary
+*.jpeg binary
+
+# Веса модели хранятся через Git LFS: в истории git только ссылка на файл
+models/*.pt filter=lfs diff=lfs merge=lfs -text

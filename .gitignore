@@ -1,0 +1,47 @@
+# Виртуальное окружение. Его создаёт Poetry в папке .venv по pyproject.toml
+# и poetry.lock, поэтому в git хранятся только эти два файла.
+.venv/
+venv/
+env/
+
+# Кэш Python и инструментов проверки
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Секреты и локальные настройки (пример переменных лежит в .env.example)
+.env
+
+# Данные хранятся вне git, в репозитории только описание структуры
+data/*
+!data/README.md
+
+# Результаты запусков: предсказания, графики, веса после обучения
+runs/
+results/
+
+# Веса моделей. В git (через Git LFS) лежит только итоговая модель
+*.pt
+*.pth
+*.onnx
+!models/best.pt
+
+# Редакторы и система
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Тяжёлые файлы, которым не место в репозитории
+*.mp4
+*.zip
