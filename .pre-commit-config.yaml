@@ -1,0 +1,68 @@
+# Проверки, которые запускаются перед каждым коммитом.
+#
+# Подключить к своей копии репозитория (один раз после poetry install):
+#   poetry run pre-commit install
+# Проверить все файлы вручную:
+#   poetry run pre-commit run --all-files
+# Обновить версии проверок:
+#   poetry run pre-commit autoupdate
+minimum_pre_commit_version: "4.0.0"
+
+repos:
+  # Мелочи: пробелы в конце строк, переводы строк, YAML/TOML, большие файлы
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      # Не даёт закоммитить датасет или веса мимо Git LFS
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+      - id: detect-private-key
+      - id: debug-statements
+
+  # Форматирование кода
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 26.10.1
+    hooks:
+      - id: black
+
+  # Порядок импортов (профиль black, настройки в pyproject.toml)
+  - repo: https://github.com/PyCQA/isort
+    rev: 9.0.2
+    hooks:
+      - id: isort
+
+  # Стиль PEP 8, ошибки и сложность кода (настройки в .flake8)
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.4.1
+    hooks:
+      - id: flake8
+        additional_dependencies: [flake8-bugbear==26.9.30]
+
+  # Проверка типов (настройки в pyproject.toml)
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v2.4.0
+    hooks:
+      - id: mypy
+        files: ^src/
+        args: []
+        additional_dependencies:
+          - matplotlib==3.11.2
+          - numpy==2.4.6
+          - pillow==13.0.0
+          - python-dotenv==1.2.4
+          - types-PyYAML==6.0.12.20260906
+
+  # pyproject.toml корректен и poetry.lock с ним совпадает
+  - repo: https://github.com/python-poetry/poetry
+    rev: 2.5.1
+    hooks:
+      - id: poetry-check
+        args: [--lock]

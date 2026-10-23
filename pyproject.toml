@@ -46,6 +46,30 @@ nvidia-cuda-nvrtc = { version = "13.0.88", markers = "platform_system == 'Linux'
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+# Длина строки 79 по PEP 8, одинаково для black, isort и flake8 (.flake8)
+[tool.black]
+line-length = 79
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 79
+known_first_party = ["wheat_detection"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["src"]
+strict = true
+warn_unreachable = true
+
+# ultralytics подгружает классы лениво, и mypy их не видит. Считаем модуль
+# нетипизированным: проверка одинакова и с ним (poetry run mypy),
+# и без него (pre-commit ставит mypy отдельно, без torch и ultralytics)
+[[tool.mypy.overrides]]
+module = ["ultralytics", "ultralytics.*"]
+follow_imports = "skip"
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = ["-ra", "--strict-markers", "--strict-config"]
