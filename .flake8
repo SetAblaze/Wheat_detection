@@ -1,0 +1,9 @@
+# flake8 не читает pyproject.toml, поэтому настройки здесь.
+[flake8]
+# PEP 8: строки не длиннее 79 символов (так же настроены black и isort)
+max-line-length = 79
+# Сложность функции по McCabe: выше 10 уже трудно читать и тестировать
+max-complexity = 10
+# E203, E701, E704 спорят с форматированием black, решает black
+extend-ignore = E203, E701, E704
+extend-exclude = .venv, build, dist, runs, data

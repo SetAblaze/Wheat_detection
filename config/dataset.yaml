@@ -1,5 +1,0 @@
-path: C:/Users/User/Desktop/wheat_detection/data
-train: train/images
-val: train/images
-nc: 1
-names: ['wheat_head']

@@ -1,0 +1,6 @@
+# Локальные настройки Poetry для этого репозитория.
+# Окружение создаётся в папке .venv внутри проекта: так его сразу находят
+# VS Code и PyCharm. Сама папка .venv в git не попадает (см. .gitignore).
+[virtualenvs]
+create = true
+in-project = true

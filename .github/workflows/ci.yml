@@ -1,0 +1,42 @@
+# GitHub Actions: то же, что .gitlab-ci.yml, для репозитория на GitHub.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  YOLO_OFFLINE: "1"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+      - run: pip install pre-commit==4.7.0
+      - run: pre-commit run --all-files --show-diff-on-failure
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # Веса из Git LFS не скачиваются (lfs: false по умолчанию),
+      # тесты на настоящей модели при этом пропускаются
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install poetry==2.5.1
+      - uses: actions/cache@v6
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-py3.12-${{ hashFiles('poetry.lock') }}
+      - run: poetry install --no-interaction
+      - run: poetry run pytest --cov --cov-report=term

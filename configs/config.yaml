@@ -1,0 +1,32 @@
+# Настройки проекта wheat-detection.
+#
+# Относительные пути считаются от корня проекта: команды запускаются из него.
+# Любой параметр можно переопределить:
+#   - переменной окружения WHEAT_<РАЗДЕЛ>__<ПАРАМЕТР>, например
+#     WHEAT_PREDICT__CONF=0.4 (можно записать в файл .env, см. .env.example);
+#   - аргументом командной строки, например --conf 0.4.
+
+paths:
+  train_images_dir: data/train/images   # фото для обучения, разметка в data/train/labels
+  sample_images_dir: data/arvalis_3     # фото для predict/compare с флагом --random
+  splits_dir: data/splits               # сюда split-data пишет train.txt, val.txt, dataset.yaml
+  dataset_template: configs/dataset.yaml
+  weights: models/best.pt
+  runs_dir: runs                        # результаты запусков, в git не попадают
+
+train:
+  base_model: yolov8n.pt   # исходные веса, ultralytics скачает их сам
+  epochs: 50
+  imgsz: 640
+  batch: 16                # -1: подобрать по памяти видеокарты
+  device: auto             # auto: видеокарта, если есть, иначе процессор; cpu; 0
+  workers: 8
+  seed: 42
+  val_fraction: 0.2        # доля фото для проверки, в обучение они не попадают
+
+predict:
+  conf: 0.25               # порог уверенности
+  iou: 0.7                 # порог перекрытия рамок
+  imgsz: 640
+  device: auto
+  max_det: 300             # максимум колосьев на одном фото

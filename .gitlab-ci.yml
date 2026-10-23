@@ -1,0 +1,48 @@
+# GitLab CI: на каждый push и merge request проверяем стиль кода
+# и запускаем тесты. Merge request вливается в main только при зелёном CI.
+
+stages:
+  - lint
+  - test
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
+  POETRY_VIRTUALENVS_IN_PROJECT: "true"
+  # Веса модели (Git LFS) для проверок не нужны, не тратим на них трафик
+  GIT_LFS_SKIP_SMUDGE: "1"
+  # ultralytics не ходит в сеть за обновлениями и аналитикой
+  YOLO_OFFLINE: "1"
+
+default:
+  image: python:3.12
+
+lint:
+  stage: lint
+  cache:
+    key:
+      files: [.pre-commit-config.yaml]
+    paths: [.cache/pre-commit, .cache/pip]
+  script:
+    - pip install pre-commit==4.7.0
+    - pre-commit run --all-files --show-diff-on-failure
+
+test:
+  stage: test
+  # Ключ кэша зависит от poetry.lock: пока зависимости не менялись,
+  # окружение берётся из кэша, а не ставится заново
+  cache:
+    key:
+      files: [poetry.lock]
+    paths: [.venv, .cache/pip]
+  script:
+    - pip install poetry==2.5.1
+    - poetry install --no-interaction
+    - poetry run pytest --cov --cov-report=term --cov-report=xml:coverage.xml
+  coverage: '/TOTAL.*\s(\d+(?:\.\d+)?)%/'
+  artifacts:
+    when: always
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
