@@ -1,0 +1,47 @@
+[project]
+name = "wheat-detection"
+version = "1.0.0"
+description = "Детекция колосьев пшеницы на фотографиях поля (YOLOv8)"
+authors = [{ name = "Марк Левичкин" }]
+readme = "README.md"
+requires-python = ">=3.11,!=3.14.1,<3.15"
+dependencies = [
+    "ultralytics (>=8.4,<9.0)",
+    "matplotlib (>=3.8,<4.0)",
+    "numpy (>=1.26,<3.0)",
+    "pillow (>=10.0,<14.0)",
+    "python-dotenv (>=1.0,<2.0)",
+    "pyyaml (>=6.0,<7.0)",
+]
+
+[project.scripts]
+wheat-detection = "wheat_detection.cli:main"
+
+[tool.poetry]
+requires-poetry = ">=2.0"
+packages = [{ include = "wheat_detection", from = "src" }]
+
+[tool.poetry.group.dev.dependencies]
+black = "^26.10.1"
+flake8 = "^7.4.1"
+flake8-bugbear = "^26.9.30"
+isort = "^9.0.2"
+mypy = "^2.4.0"
+pre-commit = "^4.7.0"
+pytest = "^9.1.1"
+pytest-cov = "^7.1.0"
+types-pyyaml = "^6.0.12"
+
+# torch 2.14 на Linux получает две библиотеки CUDA двумя путями с разными
+# условиями, и без этих строк Poetry записывает в poetry.lock по две версии
+# каждой, а poetry install при каждом запуске переставляет их заново.
+# Здесь зафиксированы версии, которые требует сам torch. На Windows и macOS
+# группа ничего не ставит. При обновлении torch поправьте версии или
+# удалите группу.
+[tool.poetry.group.linux-cuda.dependencies]
+nvidia-cublas = { version = "13.1.1.3", markers = "platform_system == 'Linux'" }
+nvidia-cuda-nvrtc = { version = "13.0.88", markers = "platform_system == 'Linux'" }
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
