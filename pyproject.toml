@@ -45,3 +45,17 @@ nvidia-cuda-nvrtc = { version = "13.0.88", markers = "platform_system == 'Linux'
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers", "--strict-config"]
+markers = [
+    "slow: проверка на настоящих весах (нужны ultralytics и models/best.pt)",
+]
+
+[tool.coverage.run]
+source = ["wheat_detection"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
