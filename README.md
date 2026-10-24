@@ -144,24 +144,6 @@ poetry sync                     # привести .venv точно к poetry.lo
 `pyproject.toml` и `poetry.lock` коммитятся вместе. Если забыть обновить
 `poetry.lock`, коммит остановит проверка `poetry check --lock`.
 
-## Работа в команде
-
-- В `main` лежит рабочая версия, напрямую в неё не коммитят.
-- Каждая задача делается в своей ветке: `git checkout -b feature/имя`.
-- Ветка вливается в `main` через Merge Request (GitLab) или Pull
-  Request (GitHub) после ревью и успешного CI.
-- CI описан в `.gitlab-ci.yml` и `.github/workflows/ci.yml`: этап `lint`
-  (все проверки pre-commit) и этап `test` (pytest). Окружение кэшируется
-  по хэшу `poetry.lock`.
-
-Подключить удалённый репозиторий и отправить историю:
-
-```bash
-git lfs install                  # чтобы веса ушли в LFS, а не только ссылка
-git remote add origin <адрес>
-git push -u origin main --tags
-```
-
 ## Метрики исходной модели
 
 `models/best.pt`: YOLOv8n, 50 эпох, imgsz 640, batch 16. Графики
