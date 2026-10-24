@@ -24,9 +24,12 @@ SAMPLE = REPO_ROOT / "tests" / "data" / "wheat_sample.jpg"
 
 @pytest.fixture(scope="module")
 def model() -> Any:
-    pytest.importorskip("ultralytics")
+    # Сначала веса: в CI их нет, и ultralytics там даже не импортируется
     if not WEIGHTS.is_file() or is_lfs_pointer(WEIGHTS):
         pytest.skip("нет весов models/best.pt (выполните git lfs pull)")
+    # ImportError, а не только «модуль не найден»: на сервере без
+    # графических библиотек (нет libGL) падает импорт opencv
+    pytest.importorskip("ultralytics", exc_type=ImportError)
     return load_model(WEIGHTS)
 
 
